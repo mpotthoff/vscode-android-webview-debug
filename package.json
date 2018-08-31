@@ -1,0 +1,174 @@
+{
+    "name": "vscode-android-webview-debug",
+    "displayName": "Android WebView Debugging",
+    "description": "Debug your JavaScript code running in WebViews on any Android device from VS Code.",
+    "version": "0.0.1",
+    "icon": "images/icon.png",
+    "author": {
+        "name": "Michael Potthoff"
+    },
+    "license": "LGPL-3.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/mpotthoff/vscode-android-webview-debug"
+    },
+    "publisher": "mpotthoff",
+    "bugs": {
+        "url": "https://github.com/mpotthoff/vscode-android-webview-debug/issues"
+    },
+    "engines": {
+        "vscode": "^1.26.0"
+    },
+    "categories": [
+        "Debuggers"
+    ],
+    "keywords": [
+        "android",
+        "webview",
+        "chrome",
+        "debug",
+        "debugging",
+        "multi-root ready"
+    ],
+    "main": "./out/extension",
+    "activationEvents": [
+        "onDebugInitialConfigurations",
+        "onDebugResolve:android-webview"
+    ],
+    "contributes": {
+        "configuration": {
+            "type": "object",
+            "title": "Android WebView Debugging",
+            "properties": {
+                "androidChromeDebug.adbExecutable": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "default": null,
+                    "description": "Specifies the path of the ADB executable to use."
+                }
+            }
+        },
+        "debuggers": [
+            {
+                "type": "android-webview",
+                "label": "Android WebView",
+                "configurationAttributes": {
+                    "attach": {
+                        "required": [],
+                        "properties": {
+                            "device": {
+                                "type": "string",
+                                "description": "The serial of the device to attach to.",
+                                "default": "A1B2C3D4E5F6"
+                            },
+                            "application": {
+                                "type": "string",
+                                "description": "The package name of the application to attach to.",
+                                "default": "com.example.app"
+                            },
+                            "port": {
+                                "type": "number",
+                                "default": 9222
+                            },
+                            "sourceMaps": {
+                                "type": "boolean",
+                                "default": true
+                            },
+                            "trace": {
+                                "type": [
+                                    "boolean",
+                                    "string"
+                                ],
+                                "enum": [
+                                    "verbose",
+                                    true
+                                ],
+                                "default": true
+                            },
+                            "url": {
+                                "type": "string",
+                                "default": "http://localhost:8080"
+                            },
+                            "webRoot": {
+                                "type": "string",
+                                "default": "${workspaceFolder}"
+                            },
+                            "pathMapping": {
+                                "type": "object",
+                                "default": {}
+                            },
+                            "sourceMapPathOverrides": {
+                                "type": "object",
+                                "default": {}
+                            },
+                            "smartStep": {
+                                "type": "boolean",
+                                "default": true
+                            },
+                            "skipFiles": {
+                                "type": "array",
+                                "default": []
+                            },
+                            "timeout": {
+                                "type": "number",
+                                "default": 10000
+                            },
+                            "disableNetworkCache": {
+                                "type": "boolean",
+                                "default": true
+                            },
+                            "urlFilter": {
+                                "type": "string",
+                                "default": ""
+                            },
+                            "showAsyncStacks": {
+                                "type": "boolean",
+                                "default": true
+                            }
+                        }
+                    }
+                },
+                "initialConfigurations": [
+                    {
+                        "type": "android-webview",
+                        "request": "attach",
+                        "name": "Attach to Android WebView",
+                        "webRoot": "${workspaceFolder}"
+                    }
+                ],
+                "configurationSnippets": [
+                    {
+                        "label": "Android WebView: Attach",
+                        "description": "Attach to an Android WebView",
+                        "body": {
+                            "type": "android-webview",
+                            "request": "attach",
+                            "name": "${1:Attach to Android WebView}",
+                            "webRoot": "^\"${2:\\${workspaceFolder\\}}\""
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install"
+    },
+    "dependencies": {
+        "portfinder": "^1.0.17"
+    },
+    "devDependencies": {
+        "vscode": "^1.1.21",
+        "typescript": "^2.6.1",
+        "tslint": "^5.8.0",
+        "@types/node": "^8.10.25"
+    },
+    "extensionDependencies": [
+        "msjsdiag.debugger-for-chrome"
+    ]
+}
