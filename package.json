@@ -40,13 +40,10 @@
             "type": "object",
             "title": "Android WebView Debugging",
             "properties": {
-                "androidChromeDebug.adbExecutable": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "default": null,
-                    "description": "Specifies the path of the ADB executable to use."
+                "android-webview-debug.adbPath": {
+                    "type": "string",
+                    "default": "adb",
+                    "description": "Specifies the path to the ADB executable."
                 }
             }
         },

@@ -35,7 +35,7 @@ export interface WebView {
 }
 
 function getAdbExecutable(): string {
-    return vscode.workspace.getConfiguration("androidChromeDebug").get("adbExecutable") || "adb";
+    return vscode.workspace.getConfiguration("android-webview-debug").get("adbPath") || "adb";
 }
 
 export async function test(): Promise<void> {

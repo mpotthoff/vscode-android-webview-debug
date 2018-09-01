@@ -63,13 +63,13 @@ An example `launch.json` file:
 
 This extension contributes the following settings:
 
-* `androidChromeDebug.adbExecutable`: Allows one to set the path to the ADB executable to use.
+* `android-webview-debug.adbPath`: Specifies the path to the ADB executable.
 
 ## Troubleshooting
 
 ### Failed to locate ADB executable.
 
-The ADB executable was not found. Usually it should be on the PATH environment variable. You can also specify it manually using the `androidChromeDebug.adbExecutable` configuration parameter.
+The ADB executable was not found. Usually it should be on the PATH environment variable. You can also specify it manually using the `android-webview-debug.adbPath` configuration parameter.
 
 ### No WebViews found
 
