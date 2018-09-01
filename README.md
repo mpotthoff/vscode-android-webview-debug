@@ -56,7 +56,7 @@ An example `launch.json` file:
 
 ### All contributed configuration fields
 
-* `device`: The serial of the device to use. It can be find using `adb devices`.
+* `device`: The serial of the device to use. It can be found using `adb devices`.
 * `application`: The package name of the application to connect to. For example `com.android.chrome`.
 
 ## Extension Settings
