@@ -32,6 +32,11 @@ export interface Device {
     transport_id?: string;
 }
 
+export interface ForwardedSocket {
+    local: string;
+    remote: string;
+}
+
 export interface AdbOptions {
     executable: string;
 }
@@ -105,8 +110,20 @@ export interface ForwardOptions extends AdbOptions {
     remote: string;
 }
 
-export async function forward(options: ForwardOptions): Promise<void> {
-    await adb(options, "-s", options.serial, "forward", options.local, options.remote);
+export async function forward(options: ForwardOptions): Promise<ForwardedSocket> {
+    const output = await adb(options, "-s", options.serial, "forward", options.local, options.remote);
+
+    if (options.local === "tcp:0") {
+        return {
+            local: "tcp:" + parseInt(output.trim(), 10),
+            remote: options.remote
+        };
+    } else {
+        return {
+            local: options.local,
+            remote: options.remote
+        };
+    }
 }
 
 export interface UnforwardOptions extends AdbOptions {

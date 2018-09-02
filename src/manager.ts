@@ -17,7 +17,6 @@
  * along with vscode-android-webview-debug. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as portfinder from "portfinder";
 import * as vscode from "vscode";
 
 import * as adb from "./adb";
@@ -154,51 +153,49 @@ export async function findWebViews(device: Device): Promise<WebView[]> {
     return Promise.all(promises);
 }
 
-const forwardedPorts: number[] = [];
+const forwardedSockets: adb.ForwardedSocket[] = [];
 
 export async function forwardDebugger(application: WebView, port?: number): Promise<number> {
-    if (!port) {
-        port = await portfinder.getPortPromise();
-    }
+    if (port) {
+        const idx = forwardedSockets.findIndex((el) => el.local === `tcp:${port}`);
+        if (idx >= 0) {
+            forwardedSockets.splice(idx, 1);
 
-    const idx = forwardedPorts.indexOf(port);
-    if (idx >= 0) {
-        forwardedPorts.splice(idx, 1);
-
-        try {
-            await adb.removeForward({
-                executable: getAdbExecutable(),
-                local: `tcp:${port}`
-            });
-        } catch {
-            // Ignore
+            try {
+                await adb.removeForward({
+                    executable: getAdbExecutable(),
+                    local: `tcp:${port}`
+                });
+            } catch {
+                // Ignore
+            }
         }
     }
 
-    await adb.forward({
+    const socket = await adb.forward({
         executable: getAdbExecutable(),
         serial: application.device.serial,
-        local: `tcp:${port}`,
+        local: `tcp:${port || 0}`,
         remote: `localabstract:${application.socket}`
     });
 
-    forwardedPorts.push(port);
+    forwardedSockets.push(socket);
 
-    return port;
+    return parseInt(socket.local.substr(4), 10);
 }
 
 export async function unforwardDebuggers(): Promise<void> {
     const promises: Promise<any>[] = [];
 
-    for (const port of forwardedPorts) {
+    for (const socket of forwardedSockets) {
         const promise = adb.removeForward({
             executable: getAdbExecutable(),
-            local: `tcp:${port}`
+            local: socket.local
         });
         promises.push(promise.catch(() => { /* Ignore */ }));
     }
 
     await Promise.all(promises);
 
-    forwardedPorts.splice(0);
+    forwardedSockets.splice(0);
 }
