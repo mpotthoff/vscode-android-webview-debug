@@ -41,6 +41,21 @@ export interface AdbOptions {
     executable: string;
 }
 
+export interface ShellOptions extends AdbOptions {
+    serial: string;
+    command: string;
+}
+
+export interface ForwardOptions extends AdbOptions {
+    serial: string;
+    local: string;
+    remote: string;
+}
+
+export interface UnforwardOptions extends AdbOptions {
+    local: string;
+}
+
 function adb(options: AdbOptions, ...args: string[]): Promise<string> {
     return new Promise((resolve, reject) => {
         let outBuff = Buffer.alloc(0);
@@ -95,19 +110,8 @@ export async function devices(options: AdbOptions): Promise<Device[]> {
     return result;
 }
 
-export interface ShellOptions extends AdbOptions {
-    serial: string;
-    command: string;
-}
-
 export async function shell(options: ShellOptions): Promise<string> {
     return await adb(options, "-s", options.serial, "shell", options.command);
-}
-
-export interface ForwardOptions extends AdbOptions {
-    serial: string;
-    local: string;
-    remote: string;
 }
 
 export async function forward(options: ForwardOptions): Promise<ForwardedSocket> {
@@ -126,10 +130,6 @@ export async function forward(options: ForwardOptions): Promise<ForwardedSocket>
     }
 }
 
-export interface UnforwardOptions extends AdbOptions {
-    local: string;
-}
-
-export async function removeForward(options: UnforwardOptions): Promise<void> {
+export async function unforward(options: UnforwardOptions): Promise<void> {
     await adb(options, "forward", "--remove", options.local);
 }

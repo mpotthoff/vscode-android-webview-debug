@@ -19,14 +19,14 @@
 
 import * as vscode from "vscode";
 
+import * as bridge from "./bridge";
 import { DebugConfigurationProvider } from "./debugConfigurationProvider";
-import * as manager from "./manager";
 
 export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.debug.registerDebugConfigurationProvider("android-webview", new DebugConfigurationProvider()));
-    context.subscriptions.push(vscode.debug.onDidTerminateDebugSession(manager.unforwardDebuggers));
+    context.subscriptions.push(vscode.debug.onDidTerminateDebugSession(bridge.unforwardDebuggers));
 }
 
 export async function deactivate() {
-    await manager.unforwardDebuggers();
+    await bridge.unforwardDebuggers();
 }

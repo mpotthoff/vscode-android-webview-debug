@@ -19,13 +19,17 @@
 
 import * as vscode from "vscode";
 
-import * as manager from "./manager";
+import * as bridge from "./bridge";
 
 interface DeviceQuickPickItem extends vscode.QuickPickItem {
-    device: manager.Device;
+    device: bridge.Device;
 }
 
-export async function pickDevice(devices: manager.Device[]): Promise<manager.Device | undefined> {
+interface WebViewQuickPickItem extends vscode.QuickPickItem {
+    webView: bridge.WebView;
+}
+
+export async function pickDevice(devices: bridge.Device[]): Promise<bridge.Device | undefined> {
     const items = devices.map((device): DeviceQuickPickItem => {
         return {
             label: device.model || device.state,
@@ -45,11 +49,7 @@ export async function pickDevice(devices: manager.Device[]): Promise<manager.Dev
     return item.device;
 }
 
-interface WebViewQuickPickItem extends vscode.QuickPickItem {
-    webView: manager.WebView;
-}
-
-export async function pickWebView(webViews: manager.WebView[]): Promise<manager.WebView | undefined> {
+export async function pickWebView(webViews: bridge.WebView[]): Promise<bridge.WebView | undefined> {
     const items = webViews.map((application): WebViewQuickPickItem => {
         let label: string;
         if (application.type === "chrome") {

@@ -19,7 +19,7 @@
 
 import * as vscode from "vscode";
 
-import * as manager from "./manager";
+import * as bridge from "./bridge";
 import * as ui from "./ui";
 
 export class DebugConfigurationProvider implements vscode.DebugConfigurationProvider {
@@ -37,19 +37,19 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
         // Rewrite type to chrome
         debugConfiguration.type = "chrome";
 
-        // Test the client to ensure that the required executables exist
-        await manager.test();
+        // Test the bridge to ensure that the required executables exist
+        await bridge.test();
 
         return await vscode.window.withProgress({
             location: vscode.ProgressLocation.Notification
         }, async (progress) => {
-            let device: manager.Device | undefined;
-            let webView: manager.WebView | undefined;
+            let device: bridge.Device | undefined;
+            let webView: bridge.WebView | undefined;
 
             progress.report({ message: "Loading devices..." });
 
             // Find the connected devices
-            const devices = await manager.findDevices();
+            const devices = await bridge.findDevices();
             if (devices.length < 1) {
                 vscode.window.showErrorMessage(`No devices found`);
                 return null;
@@ -72,7 +72,7 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
 
                     // Find all devices that have the application running
                     const promises = devices.map(async (dev) => {
-                        const webViews = await manager.findWebViews(dev).catch((err): manager.WebView[] => {
+                        const webViews = await bridge.findWebViews(dev).catch((err): bridge.WebView[] => {
                             vscode.window.showWarningMessage(err.message);
                             return [];
                         });
@@ -80,7 +80,7 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
                     });
                     const result = await Promise.all(promises);
 
-                    const filtered = result.filter((el) => el ? true : false) as manager.WebView[];
+                    const filtered = result.filter((el) => el ? true : false) as bridge.WebView[];
                     if (filtered.length < 1) {
                         vscode.window.showErrorMessage(`No WebViews of '${debugConfiguration.application}' found on any device`);
                         return null;
@@ -118,7 +118,7 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
                 progress.report({ message: "Loading WebViews..." });
 
                 // Find the running applications
-                const webViews = await manager.findWebViews(device);
+                const webViews = await bridge.findWebViews(device);
                 if (webViews.length < 1) {
                     vscode.window.showErrorMessage(`No WebViews found`);
                     return null;
@@ -134,7 +134,7 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
 
                     webView = found;
                 } else {
-                    // Ask the user to select an application
+                    // Ask the user to select a webview
                     const picked = await ui.pickWebView(webViews);
                     if (!picked) {
                         return null;
@@ -146,8 +146,8 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
 
             progress.report({ message: "Forwarding debugger..." });
 
-            // Forward the application to the local port
-            debugConfiguration.port = await manager.forwardDebugger(webView, debugConfiguration.port);
+            // Forward the debugger to the local port
+            debugConfiguration.port = await bridge.forwardDebugger(webView, debugConfiguration.port);
 
             vscode.window.showInformationMessage(`Connected to ${webView.packageName} on ${webView.device.serial}`);
 
