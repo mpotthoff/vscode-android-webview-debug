@@ -1,4 +1,4 @@
-## Unreleased
+## 1.0.2 - 2018-09-03
 * Remove the portfinder dependency and let ADB find an unused port instead
 * Improve the WebView detection in the ADB client bridge
 
