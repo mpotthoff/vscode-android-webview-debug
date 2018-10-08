@@ -23,7 +23,7 @@ import * as bridge from "./bridge";
 import * as ui from "./ui";
 
 export class DebugConfigurationProvider implements vscode.DebugConfigurationProvider {
-    public async resolveDebugConfiguration?(folder: vscode.WorkspaceFolder | undefined, debugConfiguration: vscode.DebugConfiguration, token?: vscode.CancellationToken): Promise<vscode.DebugConfiguration | null> {
+    public async resolveDebugConfiguration?(folder: vscode.WorkspaceFolder | undefined, debugConfiguration: vscode.DebugConfiguration, token?: vscode.CancellationToken): Promise<vscode.DebugConfiguration | null | undefined> {
         if (!debugConfiguration.type || !debugConfiguration.request) {
             // Empty configurations are unsupported
             return null;
@@ -52,7 +52,7 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
             const devices = await bridge.findDevices();
             if (devices.length < 1) {
                 vscode.window.showErrorMessage(`No devices found`);
-                return null;
+                return undefined;
             }
 
             if (debugConfiguration.device) {
@@ -60,7 +60,7 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
                 const found = devices.find((el) => el.serial === debugConfiguration.device);
                 if (!found) {
                     vscode.window.showErrorMessage(`Device '${debugConfiguration.device}' not found`);
-                    return null;
+                    return undefined;
                 }
 
                 device = found;
@@ -83,7 +83,7 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
                     const filtered = result.filter((el) => el ? true : false) as bridge.WebView[];
                     if (filtered.length < 1) {
                         vscode.window.showErrorMessage(`No WebViews of '${debugConfiguration.application}' found on any device`);
-                        return null;
+                        return undefined;
                     } else if (filtered.length === 1) {
                         device = filtered[0].device;
                         webView = filtered[0];
@@ -92,12 +92,12 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
                         const filteredDevices = filtered.map((el) => el.device);
                         const pickedDevice = await ui.pickDevice(filteredDevices);
                         if (!pickedDevice) {
-                            return null;
+                            return undefined;
                         }
 
                         const pickedWebView = filtered.find((el) => el.device === pickedDevice);
                         if (!pickedWebView) {
-                            return null;
+                            return undefined;
                         }
 
                         device = pickedWebView.device;
@@ -107,7 +107,7 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
                     // Ask the user to select a connected device
                     const picked = await ui.pickDevice(devices);
                     if (!picked) {
-                        return null;
+                        return undefined;
                     }
 
                     device = picked;
@@ -121,7 +121,7 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
                 const webViews = await bridge.findWebViews(device);
                 if (webViews.length < 1) {
                     vscode.window.showErrorMessage(`No WebViews found`);
-                    return null;
+                    return undefined;
                 }
 
                 if (debugConfiguration.application) {
@@ -129,7 +129,7 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
                     const found = webViews.find((el) => el.packageName === debugConfiguration.application);
                     if (!found) {
                         vscode.window.showErrorMessage(`No WebViews of '${debugConfiguration.application}' found`);
-                        return null;
+                        return undefined;
                     }
 
                     webView = found;
@@ -137,7 +137,7 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
                     // Ask the user to select a webview
                     const picked = await ui.pickWebView(webViews);
                     if (!picked) {
-                        return null;
+                        return undefined;
                     }
 
                     webView = picked;

@@ -1,3 +1,6 @@
+## Unreleased
+* Disable the automatic opening of the `launch.json` configuration file if no device and/or WebView is found or the user aborted the picker dialog
+
 ## 1.0.2 - 2018-09-03
 * Remove the portfinder dependency and let ADB find an unused port instead
 * Improve the WebView detection in the ADB client bridge
