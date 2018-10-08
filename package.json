@@ -158,9 +158,9 @@
     },
     "devDependencies": {
         "vscode": "^1.1.21",
-        "typescript": "^3.0.3",
+        "typescript": "^3.1.1",
         "tslint": "^5.11.0",
-        "@types/node": "^8.10.29"
+        "@types/node": "^8.10.33"
     },
     "extensionDependencies": [
         "msjsdiag.debugger-for-chrome"
