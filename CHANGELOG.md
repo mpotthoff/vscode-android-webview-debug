@@ -1,4 +1,4 @@
-## Unreleased
+## 1.0.3 - 2018-10-08
 * Disable the automatic opening of the `launch.json` configuration file if no device and/or WebView is found or the user aborted the picker dialog
 
 ## 1.0.2 - 2018-09-03
