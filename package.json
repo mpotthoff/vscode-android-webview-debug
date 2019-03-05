@@ -157,10 +157,10 @@
         "postinstall": "node ./node_modules/vscode/bin/install"
     },
     "devDependencies": {
-        "vscode": "^1.1.21",
-        "typescript": "^3.1.1",
-        "tslint": "^5.11.0",
-        "@types/node": "^8.10.33"
+        "vscode": "^1.1.30",
+        "typescript": "^3.3.3333",
+        "tslint": "^5.13.1",
+        "@types/node": "^8.10.42"
     },
     "extensionDependencies": [
         "msjsdiag.debugger-for-chrome"

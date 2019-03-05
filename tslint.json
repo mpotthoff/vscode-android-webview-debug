@@ -2,7 +2,6 @@
     "extends": "tslint:recommended",
     "rules": {
         "array-type": [ true, "array" ],
-        "completed-docs": [ true, "classes", "enums", "functions", "interfaces", "methods", "properties", "types" ],
         "interface-name": [ true, "never-prefix" ],
         "jsdoc-format": [ true, "check-multiline-start" ],
         "max-classes-per-file": false,
