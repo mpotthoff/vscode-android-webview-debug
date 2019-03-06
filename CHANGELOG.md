@@ -1,4 +1,4 @@
-## Unreleased
+## 1.1.0 - 2019-03-06
 * Implement custom execution of `preLaunchTask` because otherwise the task gets executed _after_ the debugging connection is established
 
 ## 1.0.3 - 2018-10-08
