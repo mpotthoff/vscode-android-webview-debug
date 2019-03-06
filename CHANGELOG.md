@@ -1,3 +1,6 @@
+## Unreleased
+* Implement custom execution of `preLaunchTask` because otherwise the task gets executed _after_ the debugging connection is established
+
 ## 1.0.3 - 2018-10-08
 * Disable the automatic opening of the `launch.json` configuration file if no device and/or WebView is found or the user aborted the picker dialog
 

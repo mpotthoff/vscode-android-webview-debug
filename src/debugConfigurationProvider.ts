@@ -20,6 +20,7 @@
 import * as vscode from "vscode";
 
 import * as bridge from "./bridge";
+import * as tasks from "./tasks";
 import * as ui from "./ui";
 
 export class DebugConfigurationProvider implements vscode.DebugConfigurationProvider {
@@ -32,6 +33,45 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
         if (debugConfiguration.request !== "attach") {
             // Only attach is supported right now
             return null;
+        }
+
+        if (debugConfiguration.preLaunchTask) {
+            // Workaround for a configured preLaunchTask.
+            // The debug configuration is resolved before the preLaunchTask gets executed.
+            // This means the debugging connection would be established before the task gets executed,
+            // which would prevent the task from deploying the application.
+
+            const task = await tasks.findTask(debugConfiguration.preLaunchTask);
+            if (!task) {
+                let item;
+                if (typeof debugConfiguration.preLaunchTask === "string") {
+                    item = await vscode.window.showErrorMessage(`Could not find the task '${debugConfiguration.preLaunchTask}'.`, {
+                        modal: true
+                    }, "Debug Anyway", "Configure Task", "Open launch.json");
+                } else {
+                    item = await vscode.window.showErrorMessage("Could not find the specified task.", {
+                        modal: true
+                    }, "Debug Anyway", "Configure Task", "Open launch.json");
+                }
+
+                if (item === "Debug Anyway") {
+                    // Continue
+                } else if (item === "Configure Task") {
+                    vscode.commands.executeCommand("workbench.action.tasks.configureTaskRunner");
+                    return undefined;
+                } else if (item === "Open launch.json") {
+                    return null;
+                } else {
+                    return undefined;
+                }
+            } else {
+                const result = await tasks.executeTask(task);
+                if (!result) {
+                    return undefined;
+                }
+            }
+
+            delete debugConfiguration.preLaunchTask;
         }
 
         // Rewrite type to chrome
