@@ -156,6 +156,9 @@
         "compile": "tsc -p ./",
         "watch": "tsc -watch -p ./"
     },
+    "dependencies": {
+        "vsls": "0.3.1291"
+    },
     "devDependencies": {
         "@types/vscode": "1.26.0",
         "typescript": "3.6.2",

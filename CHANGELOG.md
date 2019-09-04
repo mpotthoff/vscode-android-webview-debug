@@ -1,5 +1,6 @@
 ## Unreleased
 * Change the `extensionKind` to `ui` because vscode-chrome-debug can not be installed on a remote system
+* Add a check for VS LiveShare to prevent the debugging configuration from being resolved in a guest instance
 
 ## 1.1.0 - 2019-03-06
 * Implement custom execution of `preLaunchTask` because otherwise the task gets executed _after_ the debugging connection is established
