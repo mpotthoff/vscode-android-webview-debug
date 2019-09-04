@@ -1,4 +1,4 @@
-## Unreleased
+## 1.1.1 - 2019-09-04
 * Change the `extensionKind` to `ui` because vscode-chrome-debug can not be installed on a remote system
 * Add a check for VS LiveShare to prevent the debugging configuration from being resolved in a guest instance
 
