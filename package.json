@@ -31,6 +31,7 @@
         "multi-root ready"
     ],
     "main": "./out/extension",
+    "extensionKind": "ui",
     "activationEvents": [
         "onDebugInitialConfigurations",
         "onDebugResolve:android-webview"
