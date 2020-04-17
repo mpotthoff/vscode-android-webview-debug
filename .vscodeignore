@@ -1,10 +1,10 @@
+.github/**
 .vscode/**
 .vscode-test/**
 out/test/**
 out/**/*.map
 src/**
+.gitattributes
 .gitignore
-azure-pipelines.yml
 tsconfig.json
-vsc-extension-quickstart.md
 tslint.json
