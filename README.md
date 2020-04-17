@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://github.com/mpotthoff/vscode-android-webview-debug/releases"><img src="https://img.shields.io/github/release/mpotthoff/vscode-android-webview-debug.svg?logo=github&style=flat-square" alt="GitHub Release"></a>
   <a href="https://marketplace.visualstudio.com/items?itemName=mpotthoff.vscode-android-webview-debug"><img src="https://img.shields.io/visual-studio-marketplace/v/mpotthoff.vscode-android-webview-debug.svg?logo=visual-studio-code&style=flat-square" alt="Visual Studio Marketplace Release"></a>
-  <a href="https://mpotthoff.visualstudio.com/vscode-android-webview-debug/_build?definitionId=1"><img src="https://img.shields.io/azure-devops/build/mpotthoff/c10616df-56e7-4a81-a267-ac7920e7a7d0/1/master.svg?logo=azure-devops&style=flat-square" alt="Azure DevOps Build Status"></a>
+  <a href="https://github.com/mpotthoff/vscode-android-webview-debug/actions"><img src="https://img.shields.io/github/workflow/status/mpotthoff/vscode-android-webview-debug/Build/master?logo=github&style=flat-square" alt="GitHub Actions Build Status"></a>
   <a href="https://github.com/mpotthoff/vscode-android-webview-debug/blob/master/LICENSE"><img src="https://img.shields.io/github/license/mpotthoff/vscode-android-webview-debug.svg?style=flat-square" alt="License"></a>
 </p>
 
