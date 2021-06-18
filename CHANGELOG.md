@@ -1,4 +1,4 @@
-## Unreleased
+## 1.1.2 - 2021-06-18
 * Allow the user to select which page to debug in case multiple are available ([#2][i2])
 
 ## 1.1.1 - 2019-09-04
