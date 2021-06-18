@@ -29,6 +29,10 @@ interface WebViewQuickPickItem extends vscode.QuickPickItem {
     webView: bridge.WebView;
 }
 
+interface PageQuickPickItem extends vscode.QuickPickItem {
+    page: bridge.WebViewPage;
+}
+
 export async function pickDevice(devices: bridge.Device[]): Promise<bridge.Device | undefined> {
     const items = devices.map((device): DeviceQuickPickItem => {
         return {
@@ -86,4 +90,24 @@ export async function pickWebView(webViews: bridge.WebView[]): Promise<bridge.We
     }
 
     return item.webView;
+}
+
+export async function pickWebViewPage(pages: bridge.WebViewPage[]): Promise<bridge.WebViewPage | undefined> {
+    const items = pages.map((page): PageQuickPickItem => {
+        return {
+            label: page.title,
+            description: page.url,
+            page: page
+        };
+    });
+
+    const item = await vscode.window.showQuickPick(items, {
+        placeHolder: "Select a page"
+    });
+
+    if (!item) {
+        return undefined;
+    }
+
+    return item.page;
 }

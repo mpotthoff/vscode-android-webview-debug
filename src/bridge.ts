@@ -20,6 +20,7 @@
 import * as vscode from "vscode";
 
 import * as adb from "./adb";
+import * as http from "./http";
 
 export type Device = adb.Device;
 
@@ -31,6 +32,12 @@ export interface WebView {
     type: WebViewType;
     packageName?: string;
     versionName?: string;
+}
+
+export interface WebViewPage {
+    url: string;
+    title: string;
+    webSocketDebuggerUrl: string;
 }
 
 interface Process {
@@ -296,4 +303,8 @@ export async function unforwardDebuggers(): Promise<void> {
     await Promise.all(promises);
 
     forwardedSockets.splice(0);
+}
+
+export async function getWebViewPages(port: number): Promise<WebViewPage[]> {
+    return JSON.parse(await http.get(`http://127.0.0.1:${port}/json/list`));
 }

@@ -198,6 +198,25 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
             // Forward the debugger to the local port
             debugConfiguration.port = await bridge.forwardDebugger(webView, debugConfiguration.port);
 
+            // In case neither url and urlFilter are configured we are going to try and
+            // retrieve the list of available pages. If more than one is available we will allow
+            // the user to choose one to debug.
+            if (!debugConfiguration.url && !debugConfiguration.urlFilter) {
+                try {
+                    const pages = await bridge.getWebViewPages(debugConfiguration.port);
+                    if (pages.length > 1) {
+                        const picked = await ui.pickWebViewPage(pages);
+                        if (!picked) {
+                            return undefined;
+                        }
+
+                        debugConfiguration.websocketUrl = picked.webSocketDebuggerUrl;
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+
             vscode.window.showInformationMessage(`Connected to ${webView.packageName} on ${webView.device.serial}`);
 
             return debugConfiguration;
