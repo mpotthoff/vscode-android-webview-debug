@@ -17,6 +17,9 @@
  * along with vscode-android-webview-debug. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import * as os from "os";
+import * as path from "path";
+
 import * as vscode from "vscode";
 
 import * as adb from "./adb";
@@ -50,9 +53,41 @@ interface Package {
     versionName: string;
 }
 
-function getAdbExecutable(): string {
-    return vscode.workspace.getConfiguration("android-webview-debug").get("adbPath") || "adb";
+function resolvePath(from: string): string {
+    const substituted = from.replace(
+        /(?:^(~|\.{1,2}))(?=\/)|\$(\w+)/g,
+        (_, tilde, env) => {
+            // ~/adb -> /Users/<user>/adb
+            if (tilde === "~") return os.homedir();
+
+            // ./adb -> <workspace>/adb
+            if (tilde === ".")
+                return vscode.workspace.workspaceFolders[0]?.uri.fsPath;
+         
+            // ../adb -> <workspace>/../adb
+            if (tilde === "..")
+                return vscode.workspace.workspaceFolders[0]?.uri.fsPath + "/..";
+
+            // $HOME/adb -> /Users/<user>/adb
+            if (env) return process.env[env] ?? "";
+
+            return "";
+        }
+    );
+    
+    const resolved = path.resolve(substituted);
+    return resolved;
 }
+
+function getAdbExecutable(): string {
+    const adbPath = vscode.workspace
+        .getConfiguration("android-webview-debug")
+        .get("adbPath");
+    if (adbPath) return resolvePath(adbPath);
+
+    return "adb";
+}
+
 
 export async function test(): Promise<void> {
     try {
