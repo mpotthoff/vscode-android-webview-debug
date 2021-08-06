@@ -29,7 +29,7 @@ export interface Device {
     model?: string;
     device?: string;
     features?: string;
-    transport_id?: string;
+    transportId?: string;
 }
 
 export interface ForwardedSocket {
@@ -103,7 +103,7 @@ export async function devices(options: AdbOptions): Promise<Device[]> {
             model: match[5],
             device: match[6],
             features: match[7],
-            transport_id: match[8]
+            transportId: match[8]
         });
     }
 

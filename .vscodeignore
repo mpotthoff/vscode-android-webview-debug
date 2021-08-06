@@ -4,7 +4,7 @@
 out/test/**
 out/**/*.map
 src/**
+.eslintrc.json
 .gitattributes
 .gitignore
 tsconfig.json
-tslint.json

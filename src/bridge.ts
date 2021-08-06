@@ -306,5 +306,5 @@ export async function unforwardDebuggers(): Promise<void> {
 }
 
 export async function getWebViewPages(port: number): Promise<WebViewPage[]> {
-    return JSON.parse(await http.get(`http://127.0.0.1:${port}/json/list`));
+    return JSON.parse(await http.get(`http://127.0.0.1:${port}/json/list`)) as WebViewPage[];
 }
