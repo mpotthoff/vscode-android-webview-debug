@@ -17,6 +17,9 @@
  * along with vscode-android-webview-debug. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import * as os from "os";
+import * as path from "path";
+
 import * as vscode from "vscode";
 
 import * as adb from "./adb";
@@ -50,8 +53,40 @@ interface Package {
     versionName: string;
 }
 
+function resolvePath(from: string): string {
+    const substituted = from.replace(
+        /(?:^(~|\.{1,2}))(?=\/)|\$(\w+)/g,
+        (_, tilde, env) => {
+            // $HOME/adb -> /Users/<user>/adb
+            if (env) return process.env[env] ?? "";
+
+            // ~/adb -> /Users/<user>/adb
+            if (tilde === "~") return os.homedir();
+
+            const fsPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+            if (!fsPath) return "";
+
+            // ./adb -> <workspace>/adb
+            if (tilde === ".") return fsPath;
+
+            // ../adb -> <workspace>/../adb
+            if (tilde === "..") return fsPath + "/..";
+
+            return "";
+        }
+    );
+
+    const resolved = path.resolve(substituted);
+    return resolved;
+}
+
 function getAdbExecutable(): string {
-    return vscode.workspace.getConfiguration("android-webview-debug").get("adbPath") || "adb";
+    const adbPath = vscode.workspace
+        .getConfiguration("android-webview-debug")
+        .get<string>("adbPath");
+    if (adbPath) return resolvePath(adbPath);
+
+    return "adb";
 }
 
 export async function test(): Promise<void> {
@@ -59,8 +94,8 @@ export async function test(): Promise<void> {
         await adb.version({
             executable: getAdbExecutable()
         });
-    } catch (err) {
-        if (err.code === "ENOENT") {
+    } catch (err: unknown) {
+        if ((err as NodeJS.ErrnoException | undefined)?.code === "ENOENT") {
             throw new Error("Failed to locate ADB executable.");
         }
 
@@ -104,12 +139,12 @@ async function getSockets(serial: string): Promise<string[]> {
             continue;
         }
 
-        const path = columns[7];
-        if (!path.startsWith("@") || !path.includes("_devtools_remote")) {
+        const colPath = columns[7];
+        if (!colPath.startsWith("@") || !colPath.includes("_devtools_remote")) {
             continue;
         }
 
-        result.push(path.substr(1));
+        result.push(colPath.substr(1));
     }
 
     return result;
