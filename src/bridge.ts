@@ -83,20 +83,19 @@ function resolvePath(from: string): string {
 function getAdbExecutable(): string {
     const adbPath = vscode.workspace
         .getConfiguration("android-webview-debug")
-        .get("adbPath");
+        .get<string>("adbPath");
     if (adbPath) return resolvePath(adbPath);
 
     return "adb";
 }
-
 
 export async function test(): Promise<void> {
     try {
         await adb.version({
             executable: getAdbExecutable()
         });
-    } catch (err) {
-        if (err.code === "ENOENT") {
+    } catch (err: unknown) {
+        if ((err as NodeJS.ErrnoException | undefined)?.code === "ENOENT") {
             throw new Error("Failed to locate ADB executable.");
         }
 
@@ -140,12 +139,12 @@ async function getSockets(serial: string): Promise<string[]> {
             continue;
         }
 
-        const path = columns[7];
-        if (!path.startsWith("@") || !path.includes("_devtools_remote")) {
+        const colPath = columns[7];
+        if (!colPath.startsWith("@") || !colPath.includes("_devtools_remote")) {
             continue;
         }
 
-        result.push(path.substr(1));
+        result.push(colPath.substr(1));
     }
 
     return result;
