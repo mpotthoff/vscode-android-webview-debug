@@ -57,24 +57,25 @@ function resolvePath(from: string): string {
     const substituted = from.replace(
         /(?:^(~|\.{1,2}))(?=\/)|\$(\w+)/g,
         (_, tilde, env) => {
+            // $HOME/adb -> /Users/<user>/adb
+            if (env) return process.env[env] ?? "";
+
             // ~/adb -> /Users/<user>/adb
             if (tilde === "~") return os.homedir();
 
-            // ./adb -> <workspace>/adb
-            if (tilde === ".")
-                return vscode.workspace.workspaceFolders[0]?.uri.fsPath;
-         
-            // ../adb -> <workspace>/../adb
-            if (tilde === "..")
-                return vscode.workspace.workspaceFolders[0]?.uri.fsPath + "/..";
+            const fsPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+            if (!fsPath) return "";
 
-            // $HOME/adb -> /Users/<user>/adb
-            if (env) return process.env[env] ?? "";
+            // ./adb -> <workspace>/adb
+            if (tilde === ".") return fsPath;
+
+            // ../adb -> <workspace>/../adb
+            if (tilde === "..") return fsPath + "/..";
 
             return "";
         }
     );
-    
+
     const resolved = path.resolve(substituted);
     return resolved;
 }
