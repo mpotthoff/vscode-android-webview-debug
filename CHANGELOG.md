@@ -1,4 +1,4 @@
-## Unreleased
+## 1.2.0 - 2021-08-13
 * Support primitive `adbPath` expansion ([#3](https://github.com/mpotthoff/vscode-android-webview-debug/pull/3)) by [@buschtoens](https://github.com/buschtoens)
 * Switch to the new [vscode-js-debug](https://github.com/microsoft/vscode-js-debug) extension per default
 
