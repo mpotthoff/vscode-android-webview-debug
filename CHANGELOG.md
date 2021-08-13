@@ -1,5 +1,8 @@
+## Unreleased
+* Support primitive `adbPath` expansion ([#3](https://github.com/mpotthoff/vscode-android-webview-debug/pull/3)) by [@buschtoens](https://github.com/buschtoens)
+
 ## 1.1.2 - 2021-06-18
-* Allow the user to select which page to debug in case multiple are available ([#2][i2])
+* Allow the user to select which page to debug in case multiple are available ([#2](https://github.com/mpotthoff/vscode-android-webview-debug/issues/2))
 
 ## 1.1.1 - 2019-09-04
 * Change the `extensionKind` to `ui` because vscode-chrome-debug can not be installed on a remote system
