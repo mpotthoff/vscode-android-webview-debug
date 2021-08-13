@@ -76,17 +76,25 @@ function resolvePath(from: string): string {
         }
     );
 
-    const resolved = path.resolve(substituted);
-    return resolved;
+    if (substituted.includes("/")) {
+        // Resolve the path if it contains a path seperator.
+        return path.resolve(substituted);
+    } else {
+        // Otherwise we treat it as a command that exists in PATH.
+        return substituted;
+    }
 }
 
 function getAdbExecutable(): string {
     const adbPath = vscode.workspace
         .getConfiguration("android-webview-debug")
         .get<string>("adbPath");
-    if (adbPath) return resolvePath(adbPath);
 
-    return "adb";
+    if (adbPath) {
+        return resolvePath(adbPath);
+    } else {
+        return "adb";
+    }
 }
 
 export async function test(): Promise<void> {
