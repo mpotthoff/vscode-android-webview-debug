@@ -22,9 +22,9 @@ A VS Code extension to debug your JavaScript code in the Google Chrome browser o
 
 ## Requirements
 
-### Debugger for Chrome
+### vscode-js-debug
 
-This extension uses the [Debugger for Chrome](https://github.com/Microsoft/vscode-chrome-debug) extension under the hood.
+This extension uses the [vscode-js-debug](https://github.com/microsoft/vscode-js-debug) extension under the hood.
 
 ## Using the debugger
 
@@ -34,7 +34,9 @@ When your launch config is set up, you can debug your project. Pick a launch con
 
 Right now the extension only supports attaching to an already running Google Chrome or WebView instance. This can be configured in the `.vscode/launch.json` file in the root directory of your project.
 
-> All configuration options of the `attach` configuration of the [Debugger for Chrome](https://github.com/Microsoft/vscode-chrome-debug#attach) extension are supported.
+In case you want to use the old [Debugger for Chrome](https://github.com/Microsoft/vscode-chrome-debug) extension you can set `debug.javascript.usePreview` to `false`.
+
+> All configuration options of the `pwa-chrome: attach` configuration of the [vscode-js-debug](https://github.com/microsoft/vscode-js-debug/blob/main/OPTIONS.md#pwa-chrome-attach) extension are supported.
 
 You can optionally specify a port to use for the debugging connection or let the extension automatically choose an unsued one.
 

@@ -83,8 +83,10 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
             delete debugConfiguration.preLaunchTask;
         }
 
+        const useNewDebugger = vscode.workspace.getConfiguration("debug.javascript").get<boolean>("usePreview") ?? true;
+
         // Rewrite type to chrome
-        debugConfiguration.type = "chrome";
+        debugConfiguration.type = useNewDebugger ? "pwa-chrome" : "chrome";
 
         // Test the bridge to ensure that the required executables exist
         await bridge.test();
@@ -198,10 +200,9 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
             // Forward the debugger to the local port
             debugConfiguration.port = await bridge.forwardDebugger(webView, debugConfiguration.port);
 
-            // In case neither url and urlFilter are configured we are going to try and
-            // retrieve the list of available pages. If more than one is available we will allow
-            // the user to choose one to debug.
-            if (!debugConfiguration.url && !debugConfiguration.urlFilter) {
+            // In case the old debugger is used and neither url and urlFilter are configured we are going to try and
+            // retrieve the list of available pages. If more than one is available we will allow the user to choose one to debug.
+            if (!useNewDebugger && !debugConfiguration.url && !debugConfiguration.urlFilter) {
                 try {
                     const pages = await bridge.getWebViewPages(debugConfiguration.port);
                     if (pages.length > 1) {

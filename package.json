@@ -71,61 +71,6 @@
                             "port": {
                                 "type": "number",
                                 "default": 9222
-                            },
-                            "sourceMaps": {
-                                "type": "boolean",
-                                "default": true
-                            },
-                            "trace": {
-                                "type": [
-                                    "boolean",
-                                    "string"
-                                ],
-                                "enum": [
-                                    "verbose",
-                                    true
-                                ],
-                                "default": true
-                            },
-                            "url": {
-                                "type": "string",
-                                "default": "http://localhost:8080"
-                            },
-                            "webRoot": {
-                                "type": "string",
-                                "default": "${workspaceFolder}"
-                            },
-                            "pathMapping": {
-                                "type": "object",
-                                "default": {}
-                            },
-                            "sourceMapPathOverrides": {
-                                "type": "object",
-                                "default": {}
-                            },
-                            "smartStep": {
-                                "type": "boolean",
-                                "default": true
-                            },
-                            "skipFiles": {
-                                "type": "array",
-                                "default": []
-                            },
-                            "timeout": {
-                                "type": "number",
-                                "default": 10000
-                            },
-                            "disableNetworkCache": {
-                                "type": "boolean",
-                                "default": true
-                            },
-                            "urlFilter": {
-                                "type": "string",
-                                "default": ""
-                            },
-                            "showAsyncStacks": {
-                                "type": "boolean",
-                                "default": true
                             }
                         }
                     }
@@ -171,6 +116,6 @@
         "typescript": "4.3.5"
     },
     "extensionDependencies": [
-        "msjsdiag.debugger-for-chrome"
+        "ms-vscode.js-debug"
     ]
 }
