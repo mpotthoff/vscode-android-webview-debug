@@ -108,7 +108,7 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
                 // Try to find the configured device
                 const found = devices.find((el) => el.serial === debugConfiguration.device);
                 if (!found) {
-                    vscode.window.showErrorMessage(`Device '${debugConfiguration.device}' not found`);
+                    vscode.window.showErrorMessage(`Device '${debugConfiguration.device as string}' not found`);
                     return undefined;
                 }
 
@@ -121,7 +121,7 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
 
                     // Find all devices that have the application running
                     const promises = devices.map(async (dev) => {
-                        const webViews = await bridge.findWebViews(dev).catch((err): bridge.WebView[] => {
+                        const webViews = await bridge.findWebViews(dev).catch((err: Error): bridge.WebView[] => {
                             vscode.window.showWarningMessage(err.message);
                             return [];
                         });
@@ -131,7 +131,7 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
 
                     const filtered = result.filter((el) => el ? true : false) as bridge.WebView[];
                     if (filtered.length < 1) {
-                        vscode.window.showErrorMessage(`No WebViews of '${debugConfiguration.application}' found on any device`);
+                        vscode.window.showErrorMessage(`No WebViews of '${debugConfiguration.application as string}' found on any device`);
                         return undefined;
                     } else if (filtered.length === 1) {
                         device = filtered[0].device;
@@ -177,7 +177,7 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
                     // Try to find the configured application
                     const found = webViews.find((el) => el.packageName === debugConfiguration.application);
                     if (!found) {
-                        vscode.window.showErrorMessage(`No WebViews of '${debugConfiguration.application}' found`);
+                        vscode.window.showErrorMessage(`No WebViews of '${debugConfiguration.application as string}' found`);
                         return undefined;
                     }
 
@@ -217,7 +217,7 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
                 }
             }
 
-            vscode.window.showInformationMessage(`Connected to ${webView.packageName} on ${webView.device.serial}`);
+            vscode.window.showInformationMessage(`Connected to ${webView.packageName ?? "unknown"} on ${webView.device.serial}`);
 
             return debugConfiguration;
         });

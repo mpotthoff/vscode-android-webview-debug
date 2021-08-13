@@ -30,8 +30,15 @@ export async function executeTask(task: vscode.Task): Promise<boolean> {
         return true;
     }
 
-    return new Promise(async (resolve, reject) => {
-        if (!task.isBackground) {
+    return new Promise((resolve, reject) => {
+        let execution: vscode.TaskExecution | undefined;
+        vscode.tasks.executeTask(task).then((exec) => {
+            execution = exec;
+        });
+
+        if (task.isBackground) {
+            resolve(true);
+        } else {
             const endEvent = vscode.tasks.onDidEndTask((e) => {
                 if (e.execution === execution) {
                     endEvent.dispose();
@@ -39,12 +46,6 @@ export async function executeTask(task: vscode.Task): Promise<boolean> {
                     resolve(true);
                 }
             });
-        }
-
-        const execution = await vscode.tasks.executeTask(task);
-
-        if (task.isBackground) {
-            resolve(true);
         }
     });
 }

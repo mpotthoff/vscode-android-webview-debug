@@ -56,7 +56,7 @@ interface Package {
 function resolvePath(from: string): string {
     const substituted = from.replace(
         /(?:^(~|\.{1,2}))(?=\/)|\$(\w+)/g,
-        (_, tilde, env) => {
+        (_, tilde?: string, env?: string) => {
             // $HOME/adb -> /Users/<user>/adb
             if (env) return process.env[env] ?? "";
 

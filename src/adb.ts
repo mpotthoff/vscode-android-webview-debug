@@ -119,7 +119,7 @@ export async function forward(options: ForwardOptions): Promise<ForwardedSocket>
 
     if (options.local === "tcp:0") {
         return {
-            local: "tcp:" + parseInt(output.trim(), 10),
+            local: `tcp:${parseInt(output.trim(), 10)}`,
             remote: options.remote
         };
     } else {
