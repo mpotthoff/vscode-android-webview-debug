@@ -1,4 +1,4 @@
-## Unreleased
+## 1.2.1 - 2022-02-12
 * Add `connectTimeout` to allow the user to set a time the extension will wait for the webview to become ready ([#7](https://github.com/mpotthoff/vscode-android-webview-debug/issues/7))
 
 ## 1.2.0 - 2021-08-13
