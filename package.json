@@ -71,6 +71,11 @@
                             "port": {
                                 "type": "number",
                                 "default": 9222
+                            },
+                            "connectTimeout": {
+                                "type": "number",
+                                "description": "The time the extension will wait for the webview to be ready in milliseconds.",
+                                "default": 0
                             }
                         }
                     }

@@ -121,78 +121,106 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
                 if (debugConfiguration.application) {
                     progress.report({ message: "Loading WebViews..." });
 
-                    // Find all devices that have the application running
-                    const promises = devices.map(async (dev) => {
-                        const webViews = await bridge.findWebViews(dev).catch((err: Error): bridge.WebView[] => {
-                            vscode.window.showWarningMessage(err.message);
-                            return [];
+                    const webViews = await withTimeoutRetries(debugConfiguration.connectTimeout ?? 0, 500, async () => {
+                        // Find all devices that have the application running
+                        const promises = devices.map(async (dev) => {
+                            const webViews = await bridge.findWebViews(dev).catch((err: Error): bridge.WebView[] => {
+                                vscode.window.showWarningMessage(err.message);
+                                return [];
+                            });
+                            return webViews.find((el) => el.packageName === debugConfiguration.application);
                         });
-                        return webViews.find((el) => el.packageName === debugConfiguration.application);
-                    });
-                    const result = await Promise.all(promises);
+                        const result = await Promise.all(promises);
 
-                    const filtered = result.filter((el) => el ? true : false) as bridge.WebView[];
-                    if (filtered.length < 1) {
-                        vscode.window.showErrorMessage(`No WebViews of '${debugConfiguration.application as string}' found on any device`);
+                        const filtered = result.filter((el) => el ? true : false) as bridge.WebView[];
+                        if (filtered.length < 1) {
+                            return undefined;
+                        }
+
+                        return filtered;
+                    });
+
+                    if (!webViews || webViews.length < 1) {
+                        vscode.window.showErrorMessage(`No matching WebViews found on any device`);
                         return undefined;
-                    } else if (filtered.length === 1) {
-                        device = filtered[0].device;
-                        webView = filtered[0];
+                    }
+
+                    if (webViews.length === 1) {
+                        device = webViews[0].device;
+                        webView = webViews[0];
                     } else {
                         // Ask the user to select a device
-                        const filteredDevices = filtered.map((el) => el.device);
+                        const filteredDevices = Array.from(new Set(webViews.map((el) => el.device)));
                         const pickedDevice = await ui.pickDevice(filteredDevices);
                         if (!pickedDevice) {
                             return undefined;
                         }
 
-                        const pickedWebView = filtered.find((el) => el.device === pickedDevice);
-                        if (!pickedWebView) {
+                        device = pickedDevice;
+
+                        const filtered = webViews.filter((el) => el.device === pickedDevice);
+                        if (filtered.length < 1) {
                             return undefined;
                         }
 
-                        device = pickedWebView.device;
-                        webView = pickedWebView;
+                        if (filtered.length > 1) {
+                            // Ask the user to select a webview
+                            const pickedWebView = await ui.pickWebView(webViews);
+                            if (!pickedWebView) {
+                                return undefined;
+                            }
+
+                            webView = pickedWebView;
+                        } else {
+                            webView = filtered[0];
+                        }
                     }
                 } else {
                     // Ask the user to select a connected device
-                    const picked = await ui.pickDevice(devices);
-                    if (!picked) {
+                    const pickedDevice = await ui.pickDevice(devices);
+                    if (!pickedDevice) {
                         return undefined;
                     }
 
-                    device = picked;
+                    device = pickedDevice;
                 }
             }
 
             if (!webView) {
                 progress.report({ message: "Loading WebViews..." });
 
-                // Find the running applications
-                const webViews = await bridge.findWebViews(device);
-                if (webViews.length < 1) {
-                    vscode.window.showErrorMessage(`No WebViews found`);
+                const webViews = await withTimeoutRetries(debugConfiguration.connectTimeout ?? 0, 500, async () => {
+                    // Find the running applications
+                    const webViews = await bridge.findWebViews(device!);
+                    if (webViews.length < 1) {
+                        return undefined;
+                    }
+
+                    if (debugConfiguration.application) {
+                        // Try to find the configured application
+                        const filtered = webViews.filter((el) => el.packageName === debugConfiguration.application);
+                        if (filtered.length < 1) {
+                            return undefined;
+                        }
+
+                        return filtered;
+                    } else {
+                        return webViews;
+                    }
+                });
+
+                if (!webViews || webViews.length < 1) {
+                    vscode.window.showErrorMessage(`No matching WebViews found`);
                     return undefined;
                 }
 
-                if (debugConfiguration.application) {
-                    // Try to find the configured application
-                    const found = webViews.find((el) => el.packageName === debugConfiguration.application);
-                    if (!found) {
-                        vscode.window.showErrorMessage(`No WebViews of '${debugConfiguration.application as string}' found`);
-                        return undefined;
-                    }
-
-                    webView = found;
-                } else {
-                    // Ask the user to select a webview
-                    const picked = await ui.pickWebView(webViews);
-                    if (!picked) {
-                        return undefined;
-                    }
-
-                    webView = picked;
+                // Ask the user to select a webview
+                const pickedWebView = await ui.pickWebView(webViews);
+                if (!pickedWebView) {
+                    return undefined;
                 }
+
+                webView = pickedWebView;
             }
 
             progress.report({ message: "Forwarding debugger..." });
@@ -223,4 +251,21 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
             return debugConfiguration;
         });
     }
+}
+
+function withTimeoutRetries<T>(timeout: number, interval: number, func: () => Promise<T>): Promise<T> {
+    const startTime = new Date().valueOf();
+
+    const run = async (): Promise<T> => {
+        const result = await func();
+        if (result || startTime + timeout <= new Date().valueOf()) {
+            return result;
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, interval));
+
+        return run();
+    };
+
+    return run();
 }

@@ -1,3 +1,6 @@
+## Unreleased
+* Add `connectTimeout` to allow the user to set a time the extension will wait for the webview to become ready ([#7](https://github.com/mpotthoff/vscode-android-webview-debug/issues/7))
+
 ## 1.2.0 - 2021-08-13
 * Support primitive `adbPath` expansion ([#3](https://github.com/mpotthoff/vscode-android-webview-debug/pull/3)) by [@buschtoens](https://github.com/buschtoens)
 * Switch to the new [vscode-js-debug](https://github.com/microsoft/vscode-js-debug) extension per default
