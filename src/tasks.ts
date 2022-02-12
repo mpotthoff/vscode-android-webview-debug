@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018-2021 Michael Potthoff
+ * Copyright (c) 2018-2022 Michael Potthoff
  *
  * This file is part of vscode-android-webview-debug.
  *
