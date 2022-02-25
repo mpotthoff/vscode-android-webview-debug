@@ -227,6 +227,7 @@ export class DebugConfigurationProvider implements vscode.DebugConfigurationProv
 
             // Forward the debugger to the local port
             debugConfiguration.port = await bridge.forwardDebugger(webView, debugConfiguration.port);
+            debugConfiguration.browserAttachLocation = "workspace";
 
             // In case the old debugger is used and neither url and urlFilter are configured we are going to try and
             // retrieve the list of available pages. If more than one is available we will allow the user to choose one to debug.

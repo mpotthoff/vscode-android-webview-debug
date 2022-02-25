@@ -1,3 +1,6 @@
+## Unreleased
+* Force the extension to execute on the `workspace` side instead of the `ui` side to support remote development scenarios
+
 ## 1.2.1 - 2022-02-12
 * Add `connectTimeout` to allow the user to set a time the extension will wait for the webview to become ready ([#7](https://github.com/mpotthoff/vscode-android-webview-debug/issues/7))
 

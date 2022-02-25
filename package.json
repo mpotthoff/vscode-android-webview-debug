@@ -32,7 +32,7 @@
     ],
     "main": "./out/extension",
     "extensionKind": [
-        "ui"
+        "workspace"
     ],
     "activationEvents": [
         "onDebugInitialConfigurations",
