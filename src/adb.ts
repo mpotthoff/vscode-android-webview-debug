@@ -39,6 +39,7 @@ export interface ForwardedSocket {
 
 export interface AdbOptions {
     executable: string;
+    arguments: string[];
 }
 
 export interface ShellOptions extends AdbOptions {
@@ -61,7 +62,7 @@ function adb(options: AdbOptions, ...args: string[]): Promise<string> {
         let outBuff = Buffer.alloc(0);
         let errBuff = Buffer.alloc(0);
 
-        const process = child_process.spawn(options.executable, args);
+        const process = child_process.spawn(options.executable, [...options.arguments, ...args]);
 
         process.stdout.on("data", (data) => {
             outBuff = Buffer.concat([outBuff, Buffer.from(data)]);

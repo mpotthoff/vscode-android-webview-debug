@@ -97,10 +97,23 @@ function getAdbExecutable(): string {
     }
 }
 
+function getAdbArguments(): string[] {
+    const adbArgs = vscode.workspace
+        .getConfiguration("android-webview-debug")
+        .get<string[]>("adbArgs");
+
+    if (adbArgs) {
+        return adbArgs;
+    } else {
+        return [];
+    }
+}
+
 export async function test(): Promise<void> {
     try {
         await adb.version({
-            executable: getAdbExecutable()
+            executable: getAdbExecutable(),
+            arguments: getAdbArguments()
         });
     } catch (err: unknown) {
         if ((err as NodeJS.ErrnoException | undefined)?.code === "ENOENT") {
@@ -113,13 +126,15 @@ export async function test(): Promise<void> {
 
 export async function findDevices(): Promise<Device[]> {
     return await adb.devices({
-        executable: getAdbExecutable()
+        executable: getAdbExecutable(),
+        arguments: getAdbArguments()
     });
 }
 
 async function getSockets(serial: string): Promise<string[]> {
     const output = await adb.shell({
         executable: getAdbExecutable(),
+        arguments: getAdbArguments(),
         serial: serial,
         command: "cat /proc/net/unix"
     });
@@ -161,6 +176,7 @@ async function getSockets(serial: string): Promise<string[]> {
 async function getProcesses(serial: string): Promise<Process[]> {
     const output = await adb.shell({
         executable: getAdbExecutable(),
+        arguments: getAdbArguments(),
         serial: serial,
         command: "ps"
     });
@@ -198,6 +214,7 @@ async function getProcesses(serial: string): Promise<Process[]> {
 async function getPackages(serial: string): Promise<Package[]> {
     const output = await adb.shell({
         executable: getAdbExecutable(),
+        arguments: getAdbArguments(),
         serial: serial,
         command: "dumpsys package packages"
     });
@@ -312,6 +329,7 @@ export async function forwardDebugger(application: WebView, port?: number): Prom
             try {
                 await adb.unforward({
                     executable: getAdbExecutable(),
+                    arguments: getAdbArguments(),
                     local: `tcp:${port}`
                 });
             } catch {
@@ -322,6 +340,7 @@ export async function forwardDebugger(application: WebView, port?: number): Prom
 
     const socket = await adb.forward({
         executable: getAdbExecutable(),
+        arguments: getAdbArguments(),
         serial: application.device.serial,
         local: `tcp:${port || 0}`,
         remote: `localabstract:${application.socket}`
@@ -338,6 +357,7 @@ export async function unforwardDebuggers(): Promise<void> {
     for (const socket of forwardedSockets) {
         const promise = adb.unforward({
             executable: getAdbExecutable(),
+            arguments: getAdbArguments(),
             local: socket.local
         });
         promises.push(promise.catch(() => { /* Ignore */ }));

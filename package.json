@@ -47,6 +47,14 @@
                     "type": "string",
                     "default": "adb",
                     "description": "Specifies the path to the ADB executable."
+                },
+                "android-webview-debug.adbArgs": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [],
+                    "description": "Specifies extra arguments for the ADB executable."
                 }
             }
         },

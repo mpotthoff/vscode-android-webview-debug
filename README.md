@@ -70,6 +70,7 @@ An example `launch.json` file:
 This extension contributes the following settings:
 
 * `android-webview-debug.adbPath`: Specifies the path to the ADB executable.
+* `android-webview-debug.adbArgs`: Specifies extra arguments for the ADB executable. For example `["-H", "1.2.3.4"]`
 
 ## Troubleshooting
 
