@@ -1,4 +1,4 @@
-## Unreleased
+## 1.2.2 - 2022-02-25
 * Force the extension to execute on the `workspace` side instead of the `ui` side to support remote development scenarios
 * Add `adbArgs` configuration parameter to allow extra arguments to be set for ADB
 * Remove unneccessary VS LiveShare check which is not needed anymore
