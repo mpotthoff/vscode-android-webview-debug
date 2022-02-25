@@ -63,6 +63,7 @@ An example `launch.json` file:
 
 * `device`: The serial of the device to use. It can be found using `adb devices`.
 * `application`: The package name of the application to connect to. For example `com.android.chrome`.
+* `connectTimeout`: The time the extension will wait for the webview to be ready in milliseconds.
 
 ## Extension Settings
 
