@@ -1,6 +1,7 @@
 ## Unreleased
 * Force the extension to execute on the `workspace` side instead of the `ui` side to support remote development scenarios
 * Add `adbArgs` configuration parameter to allow extra arguments to be set for ADB
+* Remove unneccessary VS LiveShare check which is not needed anymore
 
 ## 1.2.1 - 2022-02-12
 * Add `connectTimeout` to allow the user to set a time the extension will wait for the webview to become ready ([#7](https://github.com/mpotthoff/vscode-android-webview-debug/issues/7))

@@ -18,7 +18,6 @@
  */
 
 import * as vscode from "vscode";
-import * as vsls from "vsls";
 
 import * as bridge from "./bridge";
 import * as tasks from "./tasks";
@@ -26,14 +25,6 @@ import * as ui from "./ui";
 
 export class DebugConfigurationProvider implements vscode.DebugConfigurationProvider {
     public async resolveDebugConfiguration?(folder: vscode.WorkspaceFolder | undefined, debugConfiguration: vscode.DebugConfiguration, token?: vscode.CancellationToken): Promise<vscode.DebugConfiguration | null | undefined> {
-        const vslsApi = await vsls.getApi();
-        if (vslsApi && vslsApi.session.id && vslsApi.session.role === vsls.Role.Guest) {
-            // Do not do anything in a VS LiveShare guest instance. Everything
-            // has to be done in the host instance, otherwise ADB
-            // would be started in the guest instance.
-            return debugConfiguration;
-        }
-
         if (!debugConfiguration.type || !debugConfiguration.request) {
             // Empty configurations are unsupported
             return null;

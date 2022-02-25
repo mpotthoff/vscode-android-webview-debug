@@ -117,9 +117,6 @@
         "compile": "tsc -p ./",
         "watch": "tsc -watch -p ./"
     },
-    "dependencies": {
-        "vsls": "1.0.3015"
-    },
     "devDependencies": {
         "@types/node": "12.20.15",
         "@types/vscode": "1.53.0",
