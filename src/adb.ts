@@ -62,6 +62,10 @@ function adb(options: AdbOptions, ...args: string[]): Promise<string> {
         let outBuff = Buffer.alloc(0);
         let errBuff = Buffer.alloc(0);
 
+        if (options.executable.split('/').pop() !== 'adb') {
+            options.executable = options.executable.concat('/adb');
+        }
+
         const process = child_process.spawn(options.executable, [...options.arguments, ...args]);
 
         process.stdout.on("data", (data) => {
