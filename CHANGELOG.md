@@ -1,3 +1,6 @@
+## Unreleased
+* Fix devices not being recognized on systems on which ADB uses libusb ([#13](https://github.com/mpotthoff/vscode-android-webview-debug/issues/13))
+
 ## 1.2.2 - 2022-02-25
 * Force the extension to execute on the `workspace` side instead of the `ui` side to support remote development scenarios
 * Add `adbArgs` configuration parameter to allow extra arguments to be set for ADB

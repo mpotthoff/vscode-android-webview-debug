@@ -93,18 +93,18 @@ export async function devices(options: AdbOptions): Promise<Device[]> {
 
     const result: Device[] = [];
 
-    const regex = /^([a-zA-Z0-9_-]+(?:\s?[\.a-zA-Z0-9_-]+)?(?:\:\d{1,})?)\s+(device|connecting|offline|unknown|bootloader|recovery|download|unauthorized|host|no permissions)(?:\s+usb:([^:]+))?(?:\s+product:([^:]+))?(?:\s+model\:([\S]+))?(?:\s+device\:([\S]+))?(?:\s+features:([^:]+))?(?:\s+transport_id:([^:]+))?$/gim;
+    const regex = /^([a-zA-Z0-9_-]+(?:\s?[\.a-zA-Z0-9_-]+)?(?:\:\d{1,})?)\s+(device|connecting|offline|unknown|bootloader|recovery|download|unauthorized|host|no permissions)(?:(?:\s+usb:([^:]+))|(?:\s+([0-9]+\-[0-9]+(?:\.[0-9]+)*)))?(?:\s+product:([^:]+))?(?:\s+model\:([\S]+))?(?:\s+device\:([\S]+))?(?:\s+features:([^:]+))?(?:\s+transport_id:([^:]+))?$/gim;
     let match;
     while ((match = regex.exec(output)) !== null) {
         result.push({
             serial: match[1],
             state: match[2] as DeviceState,
-            usb: match[3],
-            product: match[4],
-            model: match[5],
-            device: match[6],
-            features: match[7],
-            transportId: match[8]
+            usb: match[3] || match[4],
+            product: match[5],
+            model: match[6],
+            device: match[7],
+            features: match[8],
+            transportId: match[9]
         });
     }
 
