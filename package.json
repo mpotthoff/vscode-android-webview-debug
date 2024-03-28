@@ -2,7 +2,7 @@
     "name": "vscode-android-webview-debug",
     "displayName": "Android WebView Debugging",
     "description": "Debug your JavaScript code running in WebViews on any Android device from VS Code.",
-    "version": "1.2.2",
+    "version": "1.2.3",
     "icon": "images/icon.png",
     "author": {
         "name": "Michael Potthoff"

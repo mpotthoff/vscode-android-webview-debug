@@ -1,4 +1,4 @@
-## Unreleased
+## 1.2.3 - 2024-03-28
 * Fix devices not being recognized on systems on which ADB uses libusb ([#13](https://github.com/mpotthoff/vscode-android-webview-debug/issues/13))
 
 ## 1.2.2 - 2022-02-25
